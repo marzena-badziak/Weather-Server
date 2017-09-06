@@ -11,14 +11,15 @@ app.get("/weather", function(req, res) {
   );
 
   if (!reg.test(email)) {
+    res.send({ success: false, response: "invalid email", data: "" });
     console.log("invalid email!");
   } else {
     if (
       !(city.toLowerCase() === "london" || city.toLowerCase() === "new york")
     ) {
+      res.send({ success: false, response: "invalid city", data: "" });
       console.log("You can check weather only in London or New York!");
     } else {
-      console.log("city ok");
       axios
         .get(
           "https://api.openweathermap.org/data/2.5/weather?q=" +
@@ -26,17 +27,23 @@ app.get("/weather", function(req, res) {
             "&APPID=ad39bc99ad9b6537af039f557c68561f"
         )
         .then(response => {
-          console.log(response.data.weather[0]);
-          res.send(
-            " hello " +
-              email +
-              " the weather in " +
-              city +
-              " is: " +
-              response.data.weather[0].main
-          );
+          console.log(response.data);
+          res.send({
+            success: true,
+            response: `hello ${email}, the weather in ${city} is: ${response
+              .data.weather[0].main}`,
+            data: {
+              description: response.data.weather[0].description,
+              temperature: response.data.main.temp,
+              pressure: response.data.main.pressure,
+              wind: response.data.wind,
+              humidity: response.data.main.humidity,
+              visibility: response.data.visibility
+            }
+          });
         })
         .catch(err => {
+          res.send({ success: false, response: err, data: "" });
           console.log(err);
         });
     }
