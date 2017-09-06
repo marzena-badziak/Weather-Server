@@ -17,6 +17,7 @@ app.get("/weather", function(req, res) {
     if (
       !(city.toLowerCase() === "london" || city.toLowerCase() === "new york")
     ) {
+      res.setHeader("Content-Type", "application/json");
       res.send({ success: false, response: "invalid city", data: "" });
       console.log("You can check weather only in London or New York!");
     } else {
@@ -27,6 +28,7 @@ app.get("/weather", function(req, res) {
             "&APPID=ad39bc99ad9b6537af039f557c68561f"
         )
         .then(response => {
+          res.setHeader("Content-Type", "application/json");
           res.send({
             success: true,
             response: `hello ${email}, the weather in ${city} is: ${response
@@ -42,6 +44,7 @@ app.get("/weather", function(req, res) {
           });
         })
         .catch(err => {
+          res.setHeader("Content-Type", "application/json");
           res.send({ success: false, response: err, data: "" });
           console.log(err);
         });
