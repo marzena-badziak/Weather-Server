@@ -10,15 +10,19 @@ app.get("/weather", function(req, res) {
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   );
 
+  createResp = resp => {
+    res.setHeader("Content-Type", "application/json");
+    res.send(JSON.stringify(resp));
+  };
+
   if (!reg.test(email)) {
-    res.send({ success: false, response: "invalid email", data: "" });
+    createResp({ success: false, response: "invalid email", data: "" });
     console.log("invalid email!");
   } else {
     if (
       !(city.toLowerCase() === "london" || city.toLowerCase() === "new york")
     ) {
-      res.setHeader("Content-Type", "application/json");
-      res.send({ success: false, response: "invalid city", data: "" });
+      createResp({ success: false, response: "invalid city", data: "" });
       console.log("You can check weather only in London or New York!");
     } else {
       axios
@@ -28,8 +32,7 @@ app.get("/weather", function(req, res) {
             "&APPID=ad39bc99ad9b6537af039f557c68561f"
         )
         .then(response => {
-          res.setHeader("Content-Type", "application/json");
-          res.send({
+          createResp({
             success: true,
             response: `hello ${email}, the weather in ${city} is: ${response
               .data.weather[0].main}`,
@@ -44,8 +47,7 @@ app.get("/weather", function(req, res) {
           });
         })
         .catch(err => {
-          res.setHeader("Content-Type", "application/json");
-          res.send({ success: false, response: err, data: "" });
+          createResp({ success: false, response: err, data: "" });
           console.log(err);
         });
     }
