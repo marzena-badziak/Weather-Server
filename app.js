@@ -27,7 +27,6 @@ app.get("/weather", function(req, res) {
             "&APPID=ad39bc99ad9b6537af039f557c68561f"
         )
         .then(response => {
-          console.log(response.data);
           res.send({
             success: true,
             response: `hello ${email}, the weather in ${city} is: ${response
